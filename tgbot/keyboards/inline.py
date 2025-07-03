@@ -58,7 +58,7 @@ def services_status_kb(results):
 
     # Add back button
     builder.button(text="🔙 Назад", callback_data=BackMenu(to="main").pack())
-    builder.adjust(1)  # One button per row
+    builder.adjust(2)  # One button per row
 
     return builder.as_markup()
 
