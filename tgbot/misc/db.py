@@ -34,7 +34,7 @@ def is_admin(user_id: int):
         return False
 
 
-def run_procedure(procedure: str):
+async def run_procedure(procedure: str):
     cursor = conn.cursor()
     cursor.execute(f"exec {procedure}")
     cursor.close()
