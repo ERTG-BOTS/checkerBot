@@ -64,7 +64,7 @@ async def service_detail(callback: CallbackQuery, callback_data: ServiceMenu):
     await callback.message.edit_text("🔄 Загружаю детали сервиса...")
 
     # Get service status for specific service
-    service_checker = checker([service_name])
+    service_checker = ServiceChecker([service_name])
     results = service_checker.check_all_services()
 
     if results:
