@@ -48,7 +48,7 @@ class TgBot:
         token = env.str("BOT_TOKEN")
         admin_ids = env.list("ADMINS", subcast=int)
         # use_redis = env.bool("USE_REDIS")
-        return TgBot(token=token)
+        return TgBot(token=token, admin_ids=admin_ids)
 
 
 @dataclass

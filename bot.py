@@ -70,7 +70,7 @@ async def main():
 
     register_global_middlewares(dp, config)
 
-    scheduler.add_job(kpi_check(bot), "cron", hour="11", minute=0, args=[bot])
+    scheduler.add_job(kpi_check, "cron", hour="11", minute=0, args=[bot])
     scheduler.start()
 
     await dp.start_polling(bot)
