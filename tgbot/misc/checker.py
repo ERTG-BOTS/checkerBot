@@ -6,13 +6,49 @@ from typing import Dict, List
 
 SERVICES_CONFIG = {
     'achievmentbot.service': {
-        'name': '🏆 Ачивер',
-        'display_name': 'Ачивер'
+        'name': '🏆 НТП Ачивер',
+        'display_name': 'НТП Ачивер'
+    },
+    'nckachievenmentbot.service': {
+        'name': '🏆 НЦК Ачивер',
+        'display_name': 'НЦК Ачивер'
+    },
+    'stpquestion.service': {
+        'name': '❓ НТП Вопросник',
+        'display_name': 'НТП Вопросник'
     },
     'nckquestion.service': {
         'name': '❓ НЦК Вопросник',
         'display_name': 'НЦК Вопросник'
-    }
+    },
+    'ntposchedule.service': {
+        'name': '🕞 НТП График',
+        'display_name': 'НТП График'
+    },
+    'nckschedule.service': {
+        'name': '🕞 НЦК График',
+        'display_name': 'НЦК График'
+    },
+    'gifter.service': {
+        'name': '🎁 Гифтер',
+        'display_name': 'Гифтер'
+    },
+    'nckobsh.service': {
+        'name': '👨‍👨 Общий ряд',
+        'display_name': 'Общий ряд'
+    },
+    'nckteach.service': {
+        'name': '🎓 NCKTeach',
+        'display_name': 'NCKTeach'
+    },
+    'oliver.service': {
+        'name': 'Оливер',
+        'display_name': 'Оливер'
+    },
+    'addbot.service': {
+        'name': '🥇 День достижений',
+        'display_name': 'День достижений'
+    },
 }
 
 
