@@ -2,6 +2,7 @@ aiogram~=3.20.0
 environs~=14.2.0
 redis~=6.2.0
 betterlogging~=1.0.0
+pyodbc~=5.2.0
 
 # # For enabling api:
 # backoff
