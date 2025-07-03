@@ -128,7 +128,7 @@ class ServiceChecker:
 
         return results
 
-    def format_service_message(service_name, result):
+    def format_service_message(self, service_name, result):
         """Format service status message"""
         display_name = SERVICES_CONFIG.get(service_name, {}).get('display_name', service_name)
 
@@ -171,7 +171,7 @@ class ServiceChecker:
 
         return message
 
-    async def execute_service_command(service_name, action):
+    async def execute_service_command(self, service_name, action):
         """Execute systemctl command asynchronously"""
         try:
             if action == "start":
