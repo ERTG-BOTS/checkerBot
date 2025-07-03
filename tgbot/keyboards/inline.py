@@ -18,6 +18,11 @@ class ProceduresMenu(CallbackData, prefix='procedure'):
     procedure: str
 
 
+class ProceduresConfirmMenu(CallbackData, prefix='proc_confirm'):
+    procedure: str
+    action: str  # 'confirm', 'cancel'
+
+
 class BackMenu(CallbackData, prefix='back'):
     to: str
 
@@ -113,7 +118,7 @@ def procedures_kb():
         [
             InlineKeyboardButton(text="☀️ День",
                                  callback_data=ProceduresMenu(procedure="day").pack()),
-            InlineKeyboardButton(text="☀️ Неделя",
+            InlineKeyboardButton(text="📅 Неделя",
                                  callback_data=ProceduresMenu(procedure="week").pack())
         ], [
             InlineKeyboardButton(text="🗓️ Месяц",
@@ -121,6 +126,27 @@ def procedures_kb():
         ],
         [
             InlineKeyboardButton(text="🔙 Назад", callback_data=BackMenu(to="main").pack()),
+        ],
+    ]
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+
+def procedures_confirm_kb(procedure: str):
+    """Create confirmation keyboard for procedure execution"""
+    buttons = [
+        [
+            InlineKeyboardButton(
+                text="✅ Запустить",
+                callback_data=ProceduresConfirmMenu(procedure=procedure, action="confirm").pack()
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text="🔙 Назад",
+                callback_data=ProceduresConfirmMenu(procedure=procedure, action="cancel").pack()
+            ),
         ],
     ]
 

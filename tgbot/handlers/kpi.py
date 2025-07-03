@@ -7,7 +7,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 
 from tgbot.filters.admin import AdminFilter
 from tgbot.keyboards.inline import main_kb, MainMenu, ServiceMenu, services_status_kb, service_detail_kb, BackMenu, \
-    procedures_kb, ProceduresMenu
+    procedures_kb, ProceduresMenu, procedures_confirm_kb, ProceduresConfirmMenu
 from tgbot.misc.checker import ServiceChecker, SERVICES_CONFIG, checker
 from tgbot.misc.db import run_procedure
 
@@ -25,15 +25,90 @@ async def kpi_check(callback: CallbackQuery):
 
 
 @kpi_router.callback_query(ProceduresMenu.filter())
-async def procedure(callback: CallbackQuery, callback_data: ProceduresMenu):
+async def procedure_confirm(callback: CallbackQuery, callback_data: ProceduresMenu):
+    await callback.answer()
+
     picked_variant = callback_data.procedure
 
-    match picked_variant:
-        case "day":
-            await run_procedure("UpdateKPIStatsDay")
-        case "week":
-            await run_procedure("UpdateKPIStatsWeek")
-        case "month":
-            await run_procedure("UpdateKPIStatsMonth")
+    # Map procedure codes to display names
+    procedure_names = {
+        "day": "обновление статистики за день",
+        "week": "обновление статистики за неделю",
+        "month": "обновление статистики за месяц"
+    }
 
-    await callback.answer("Процедура запущена!")
+    procedure_name = procedure_names.get(picked_variant, "неизвестную процедуру")
+
+    await callback.message.edit_text(
+        f"⚠️ <b>Подтверждение действия</b>\n\n"
+        f"Ты уверен, что хочешь запустить процедуру:\n"
+        f"<i>{procedure_name}</i>?\n\n"
+        f"Процедура может занять некоторое время.",
+        reply_markup=procedures_confirm_kb(picked_variant),
+        parse_mode="HTML"
+    )
+
+
+@kpi_router.callback_query(ProceduresConfirmMenu.filter(F.action == "confirm"))
+async def procedure_execute(callback: CallbackQuery, callback_data: ProceduresConfirmMenu):
+    await callback.answer()
+
+    picked_variant = callback_data.procedure
+
+    # Show loading message
+    await callback.message.edit_text(
+        "⏳ <b>Выполняется процедура...</b>\n\n"
+        "Пожалуйста, подожди. Это может занять несколько минут.",
+        parse_mode="HTML"
+    )
+
+    try:
+        success, message = None, None
+
+        match picked_variant:
+            case "day":
+                success, message = await run_procedure("UpdateKPIStatsDay")
+            case "week":
+                success, message = await run_procedure("UpdateKPIStatsWeek")
+            case "month":
+                success, message = await run_procedure("UpdateKPIStatsMonth")
+            case _:
+                success, message = False, "Неизвестная процедура"
+
+        if success:
+            result_text = (
+                "✅ <b>Процедура выполнена успешно!</b>\n\n"
+                f"Результат: {message if message else 'Операция завершена'}"
+            )
+        else:
+            result_text = (
+                "❌ <b>Ошибка выполнения процедуры</b>\n\n"
+                f"Детали: {message if message else 'Неизвестная ошибка'}"
+            )
+
+    except Exception as e:
+        result_text = (
+            "❌ <b>Критическая ошибка</b>\n\n"
+            f"Не удалось выполнить процедуру: {str(e)}"
+        )
+
+    # Return to main KPI menu
+    back_button = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="🔙 К выбору процедур",
+                             callback_data=MainMenu(choice="kpi").pack())
+    ]])
+
+    await callback.message.edit_text(
+        result_text,
+        reply_markup=back_button,
+        parse_mode="HTML"
+    )
+
+
+@kpi_router.callback_query(ProceduresConfirmMenu.filter(F.action == "cancel"))
+async def procedure_cancel(callback: CallbackQuery):
+    await callback.answer()
+    await callback.message.edit_text(
+        "📊 Выбери процедуру для запуска",
+        reply_markup=procedures_kb()
+    )
