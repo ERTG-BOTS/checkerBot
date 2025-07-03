@@ -8,16 +8,16 @@ from tgbot.filters.admin import AdminFilter
 from tgbot.keyboards.inline import main_kb, MainMenu, ServiceMenu, services_status_kb, service_detail_kb, BackMenu
 from tgbot.misc.checker import ServiceChecker, SERVICES_CONFIG, checker
 
-admin_router = Router()
-admin_router.message.filter(AdminFilter())
+status_router = Router()
+status_router.message.filter(AdminFilter())
 
 
-@admin_router.message(CommandStart())
+@status_router.message(CommandStart())
 async def admin_start(message: Message):
     await message.reply("Привет! Панель управления ботами.", reply_markup=main_kb())
 
 
-@admin_router.callback_query(MainMenu.filter(F.choice == "status"))
+@status_router.callback_query(MainMenu.filter(F.choice == "status"))
 async def bots_check(callback: CallbackQuery):
     await callback.answer()
 
@@ -54,7 +54,7 @@ async def bots_check(callback: CallbackQuery):
     )
 
 
-@admin_router.callback_query(ServiceMenu.filter(F.action == "view"))
+@status_router.callback_query(ServiceMenu.filter(F.action == "view"))
 async def service_detail(callback: CallbackQuery, callback_data: ServiceMenu):
     await callback.answer()
 
@@ -86,7 +86,7 @@ async def service_detail(callback: CallbackQuery, callback_data: ServiceMenu):
         )
 
 
-@admin_router.callback_query(ServiceMenu.filter(F.action.in_(["start", "stop", "restart"])))
+@status_router.callback_query(ServiceMenu.filter(F.action.in_(["start", "stop", "restart"])))
 async def service_control(callback: CallbackQuery, callback_data: ServiceMenu):
     await callback.answer()
 
@@ -141,18 +141,9 @@ async def service_control(callback: CallbackQuery, callback_data: ServiceMenu):
         )
 
 
-@admin_router.callback_query(BackMenu.filter(F.to == "main"))
+@status_router.callback_query(BackMenu.filter(F.to == "main"))
 async def back_to_main(callback: CallbackQuery):
     await callback.answer()
     await callback.message.edit_text("Панель управления ботами.", reply_markup=main_kb())
 
 
-@admin_router.callback_query(MainMenu.filter(F.choice == "kpi"))
-async def kpi_check(callback: CallbackQuery):
-    await callback.answer()
-    await callback.message.edit_text(
-        "📊 Показатели в разработке...",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="🔙 Назад", callback_data=BackMenu(to="main").pack())
-        ]])
-    )

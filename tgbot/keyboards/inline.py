@@ -14,6 +14,10 @@ class ServiceMenu(CallbackData, prefix='service'):
     action: str  # 'view', 'start', 'stop', 'restart'
 
 
+class ProceduresMenu(CallbackData, prefix='procedure'):
+    procedure: str
+
+
 class BackMenu(CallbackData, prefix='back'):
     to: str
 
@@ -102,3 +106,23 @@ def service_detail_kb(service_name, service_status):
     builder.adjust(2, 1)  # Two buttons in first row, one in second
 
     return builder.as_markup()
+
+
+def procedures_kb():
+    buttons = [
+        [
+            InlineKeyboardButton(text="☀️ День",
+                                 callback_data=ProceduresMenu(procedure="day").pack()),
+            InlineKeyboardButton(text="☀️ Неделя",
+                                 callback_data=ProceduresMenu(procedure="week").pack())
+        ], [
+            InlineKeyboardButton(text="🗓️ Месяц",
+                                 callback_data=ProceduresMenu(procedure="month").pack()),
+        ],
+        [
+            InlineKeyboardButton(text="🔙 Назад", callback_data=BackMenu(to="main").pack()),
+        ],
+    ]
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
