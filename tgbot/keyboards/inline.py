@@ -1,73 +1,104 @@
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from tgbot.misc.checker import SERVICES_CONFIG
 
-# This is a simple keyboard, that contains 2 buttons
-def very_simple_keyboard():
+
+class MainMenu(CallbackData, prefix='main'):
+    choice: str
+
+
+class ServiceMenu(CallbackData, prefix='service'):
+    service_name: str
+    action: str  # 'view', 'start', 'stop', 'restart'
+
+
+class BackMenu(CallbackData, prefix='back'):
+    to: str
+
+
+def main_kb():
     buttons = [
         [
-            InlineKeyboardButton(text="📝 Створити замовлення",
-                                 callback_data="create_order"),
-            InlineKeyboardButton(text="📋 Мої замовлення", callback_data="my_orders"),
+            InlineKeyboardButton(text="🩹 Статусы ботов",
+                                 callback_data=MainMenu(choice="status").pack()),
+        ], [
+            InlineKeyboardButton(text="📊 Показатели",
+                                 callback_data=MainMenu(choice="kpi").pack()),
         ],
     ]
 
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=buttons,
-    )
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
 
-# This is the same keyboard, but created with InlineKeyboardBuilder (preferred way)
-def simple_menu_keyboard():
-    # First, you should create an InlineKeyboardBuilder object
-    keyboard = InlineKeyboardBuilder()
+def services_status_kb(results):
+    """Create keyboard with service statuses"""
+    builder = InlineKeyboardBuilder()
 
-    # You can use keyboard.button() method to add buttons, then enter text and callback_data
-    keyboard.button(
-        text="📝 Створити замовлення",
-        callback_data="create_order"
-    )
-    keyboard.button(
-        text="📋 Мої замовлення",
-        # In this simple example, we use a string as callback_data
-        callback_data="my_orders"
-    )
+    for result in results:
+        service_name = result['service']
+        if service_name in SERVICES_CONFIG:
+            # Determine status emoji
+            if result.get('active'):
+                status_emoji = "✅"
+            elif result.get('error'):
+                status_emoji = "⚠️"
+            else:
+                status_emoji = "❌"
 
-    # If needed you can use keyboard.adjust() method to change the number of buttons per row
-    # keyboard.adjust(2)
+            display_name = SERVICES_CONFIG[service_name]['display_name']
+            button_text = f"{status_emoji} {display_name}"
 
-    # Then you should always call keyboard.as_markup() method to get a valid InlineKeyboardMarkup object
-    return keyboard.as_markup()
+            builder.button(
+                text=button_text,
+                callback_data=ServiceMenu(service_name=service_name, action="view").pack()
+            )
 
+    # Add back button
+    builder.button(text="🔙 Назад", callback_data=BackMenu(to="main").pack())
+    builder.adjust(1)  # One button per row
 
-# For a more advanced usage of callback_data, you can use the CallbackData factory
-class OrderCallbackData(CallbackData, prefix="order"):
-    """
-    This class represents a CallbackData object for orders.
-
-    - When used in InlineKeyboardMarkup, you have to create an instance of this class, run .pack() method, and pass to callback_data parameter.
-
-    - When used in InlineKeyboardBuilder, you have to create an instance of this class and pass to callback_data parameter (without .pack() method).
-
-    - In handlers you have to import this class and use it as a filter for callback query handlers, and then unpack callback_data parameter to get the data.
-
-    # Example usage in simple_menu.py
-    """
-    order_id: int
+    return builder.as_markup()
 
 
-def my_orders_keyboard(orders: list):
-    # Here we use a list of orders as a parameter (from simple_menu.py)
+def service_detail_kb(service_name, service_status):
+    """Create keyboard for individual service management"""
+    builder = InlineKeyboardBuilder()
 
-    keyboard = InlineKeyboardBuilder()
-    for order in orders:
-        keyboard.button(
-            text=f"📝 {order['title']}",
-            # Here we use an instance of OrderCallbackData class as callback_data parameter
-            # order id is the field in OrderCallbackData class, that we defined above
-            callback_data=OrderCallbackData(order_id=order["id"])
+    is_active = service_status.get('active', False)
+    has_error = service_status.get('error') is not None
+
+    if is_active:
+        # Service is running - show restart and stop
+        builder.button(
+            text="🔄 Перезапуск",
+            callback_data=ServiceMenu(service_name=service_name, action="restart").pack()
+        )
+        builder.button(
+            text="⏹️ Остановить",
+            callback_data=ServiceMenu(service_name=service_name, action="stop").pack()
+        )
+    elif has_error:
+        # Service has error - show restart and stop
+        builder.button(
+            text="🔄 Перезапуск",
+            callback_data=ServiceMenu(service_name=service_name, action="restart").pack()
+        )
+        builder.button(
+            text="⏹️ Остановить",
+            callback_data=ServiceMenu(service_name=service_name, action="stop").pack()
+        )
+    else:
+        # Service is stopped - show start
+        builder.button(
+            text="▶️ Запустить",
+            callback_data=ServiceMenu(service_name=service_name, action="start").pack()
         )
 
-    return keyboard.as_markup()
+    # Add back button
+    builder.button(text="🔙 К списку", callback_data=MainMenu(choice="status").pack())
+    builder.adjust(2, 1)  # Two buttons in first row, one in second
+
+    return builder.as_markup()

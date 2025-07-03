@@ -4,13 +4,10 @@ import logging
 import betterlogging as bl
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
 
 from tgbot.config import load_config, Config
 from tgbot.handlers import routers_list
 from tgbot.middlewares.config import ConfigMiddleware
-from tgbot.services import broadcaster
 
 
 def register_global_middlewares(dp: Dispatcher, config: Config, session_pool=None):
