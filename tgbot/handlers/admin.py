@@ -63,8 +63,9 @@ async def service_detail(callback: CallbackQuery, callback_data: ServiceMenu):
     # Show loading message
     await callback.message.edit_text("🔄 Загружаю детали сервиса...")
 
-    # Get service status
-    results = checker.check_all_services()
+    # Get service status for specific service
+    service_checker = checker([service_name])
+    results = service_checker.check_all_services()
 
     if results:
         result = results[0]
@@ -106,23 +107,23 @@ async def service_control(callback: CallbackQuery, callback_data: ServiceMenu):
     await callback.message.edit_text(f"🔄 Выполняю {action_name} сервиса {display_name}...")
 
     # Execute command
-    success, message = await checker.format_service_message(service_name, action)
+    success, command_message = await checker.execute_service_command(service_name, action)
 
     if success:
         result_message = f"✅ {action_name.capitalize()} сервиса {display_name} выполнен успешно!"
     else:
-        result_message = f"❌ Ошибка при выполнении {action_name} сервиса {display_name}:\n{message}"
+        result_message = f"❌ Ошибка при выполнении {action_name} сервиса {display_name}:\n{command_message}"
 
     # Return to service detail view
     await asyncio.sleep(2)  # Give time for service to change state
 
     # Get updated service status
-    checker = ServiceChecker([service_name])
-    results = checker.check_all_services()
+    service_checker = ServiceChecker([service_name])
+    results = service_checker.check_all_services()
 
     if results:
         result = results[0]
-        updated_message = checker.format_service_message(service_name)
+        updated_message = checker.format_service_message(service_name, result)
         updated_message = f"{result_message}\n\n{updated_message}"
         keyboard = service_detail_kb(service_name, result)
 
