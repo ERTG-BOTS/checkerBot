@@ -1,15 +1,9 @@
-import asyncio
-
 from aiogram import Router, F
-from aiogram.filters import CommandStart
-from aiogram.filters.callback_data import CallbackData
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 
 from tgbot.filters.admin import AdminFilter
-from tgbot.keyboards.inline import main_kb, MainMenu, ServiceMenu, services_status_kb, service_detail_kb, BackMenu, \
-    procedures_kb, ProceduresMenu, procedures_confirm_kb, ProceduresConfirmMenu
-from tgbot.misc.checker import ServiceChecker, SERVICES_CONFIG, checker
-from tgbot.misc.db import run_procedure
+from tgbot.keyboards.inline import MainMenu, procedures_kb, ProceduresMenu, procedures_confirm_kb, ProceduresConfirmMenu
+from tgbot.services.db import run_procedure
 
 kpi_router = Router()
 kpi_router.message.filter(AdminFilter())

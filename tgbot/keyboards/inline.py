@@ -2,7 +2,7 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from tgbot.misc.checker import SERVICES_CONFIG
+from tgbot.services.checker import SERVICES_CONFIG
 
 
 class MainMenu(CallbackData, prefix='main'):

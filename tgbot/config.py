@@ -37,7 +37,7 @@ class TgBot:
     """
 
     token: str
-    # admin_ids: list[int]
+    admin_ids: list[int]
     # use_redis: bool
 
     @staticmethod
@@ -46,7 +46,7 @@ class TgBot:
         Creates the TgBot object from environment variables.
         """
         token = env.str("BOT_TOKEN")
-        # admin_ids = env.list("ADMINS", subcast=int)
+        admin_ids = env.list("ADMINS", subcast=int)
         # use_redis = env.bool("USE_REDIS")
         return TgBot(token=token)
 

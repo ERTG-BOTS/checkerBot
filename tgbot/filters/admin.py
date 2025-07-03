@@ -2,7 +2,7 @@ from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
 from tgbot.config import Config
-from tgbot.misc.db import is_admin
+from tgbot.services.db import is_admin
 
 
 class AdminFilter(BaseFilter):

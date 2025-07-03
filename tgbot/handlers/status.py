@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 
 from tgbot.filters.admin import AdminFilter
 from tgbot.keyboards.inline import main_kb, MainMenu, ServiceMenu, services_status_kb, service_detail_kb, BackMenu
-from tgbot.misc.checker import ServiceChecker, SERVICES_CONFIG, checker
+from tgbot.services.checker import ServiceChecker, SERVICES_CONFIG, checker
 
 status_router = Router()
 status_router.message.filter(AdminFilter())

@@ -1,5 +1,6 @@
 import asyncio
-from typing import Tuple
+from datetime import datetime
+from typing import Tuple, List
 
 import pyodbc
 
@@ -118,3 +119,83 @@ def get_connection_status() -> Tuple[bool, str]:
         return True, "Соединение с базой данных активно"
     except Exception as e:
         return False, f"Ошибка соединения с БД: {str(e)}"
+
+
+async def check_kpi_data_completeness() -> Tuple[bool, List[str]]:
+    """
+    Check KPI data completeness for current date.
+
+    Excludes divisions: НЦК2Д, НЦК2Н, НЦК2М
+    Checks if all remaining 9 divisions have data for current date.
+
+    Returns:
+        Tuple[bool, List[str]]: (all_complete, missing_divisions)
+        - True if all 9 expected divisions have data for current date
+        - List of division names that are missing data for current date
+    """
+
+    def _execute_check():
+        """Execute the KPI check in a separate thread"""
+        cursor = None
+        try:
+            conn = pyodbc.connect(connection_string)
+            cursor = conn.cursor()
+
+            # Get current date in DD.MM.YYYY format (matching your data format)
+            current_date = datetime.now().strftime("%d.%m.%Y")
+
+            # Expected divisions (all divisions except excluded ones)
+            expected_divisions = [
+                'НТП1Д', 'НТП1М', 'НТП1Н',
+                'НТП2Д', 'НТП2М', 'НТП2Н',
+                'НЦК1Д', 'НЦК1М', 'НЦК1Н'
+            ]
+
+            # Get divisions that have data for current date
+            query = """
+                    SELECT DISTINCT Division
+                    FROM [STPMain].[dbo].[KPIROW]
+                    WHERE DATA = ?
+                      AND Division NOT IN ('НЦК2Д' \
+                        , 'НЦК2Н' \
+                        , 'НЦК2М') \
+                    """
+
+            cursor.execute(query, (current_date,))
+            found_divisions = [row[0] for row in cursor.fetchall()]
+
+            # Find missing divisions
+            missing_divisions = [div for div in expected_divisions if div not in found_divisions]
+
+            return len(missing_divisions) == 0, missing_divisions
+
+        except Exception as e:
+            # Return False and empty list on any error
+            return False, []
+
+        finally:
+            if cursor:
+                try:
+                    cursor.close()
+                except:
+                    pass
+            try:
+                conn.close()
+            except:
+                pass
+
+    # Run the check in a thread pool to avoid blocking the event loop
+    loop = asyncio.get_event_loop()
+    try:
+        all_complete, wrong_divisions = await loop.run_in_executor(None, _execute_check)
+        return all_complete, wrong_divisions
+    except Exception as e:
+        return False, []
+
+    # Run the check in a thread pool to avoid blocking the event loop
+    loop = asyncio.get_event_loop()
+    try:
+        all_complete, wrong_divisions = await loop.run_in_executor(None, _execute_check)
+        return all_complete, wrong_divisions
+    except Exception as e:
+        return False, []
