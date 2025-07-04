@@ -5,6 +5,10 @@ from datetime import datetime
 from typing import Dict, List
 
 SERVICES_CONFIG = {
+    'adaptive.service': {
+        'name': '👶🏻 Адаптационки',
+        'display_name': 'Адаптационки'
+    },
     'achievmentbot.service': {
         'name': '🏆 НТП Ачивер',
         'display_name': 'НТП Ачивер'
@@ -34,20 +38,12 @@ SERVICES_CONFIG = {
         'display_name': 'Гифтер'
     },
     'nckobsh.service': {
-        'name': '👨‍👨 Общий ряд',
-        'display_name': 'Общий ряд'
+        'name': '👨‍👨 НЦК Общий ряд',
+        'display_name': 'НЦК Общий ряд'
     },
     'nckteach.service': {
         'name': '🎓 NCKTeach',
         'display_name': 'NCKTeach'
-    },
-    'oliver.service': {
-        'name': 'Оливер',
-        'display_name': 'Оливер'
-    },
-    'addbot.service': {
-        'name': '🥇 День достижений',
-        'display_name': 'День достижений'
     },
 }
 
