@@ -1,0 +1,18 @@
+[Unit]
+Description=bot-checker
+After=network.target
+
+[Service]
+Type=simple
+User=gigaadmin
+Group=gigaadmin
+WorkingDirectory=/home/bot-checker
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/bot-checker/venv/bin/python3 /home/bot-checker/bot.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
