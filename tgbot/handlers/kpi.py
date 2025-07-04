@@ -52,8 +52,7 @@ async def procedure_execute(callback: CallbackQuery, callback_data: ProceduresCo
     # Show loading message
     await callback.message.edit_text(
         "⏳ <b>Выполняется процедура...</b>\n\n"
-        "Пожалуйста, подожди. Это может занять несколько минут.",
-        parse_mode="HTML"
+        "Пожалуйста, подожди. Это может занять несколько минут."
     )
 
     try:
