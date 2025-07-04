@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 
 from tgbot.filters.admin import AdminFilter
 from tgbot.keyboards.inline import main_kb, MainMenu, ServiceMenu, services_status_kb, service_detail_kb, BackMenu
-from tgbot.services.checker import ServiceChecker, SERVICES_CONFIG, checker
+from tgbot.services.checker import ServiceChecker, SERVICES_CONFIG
 
 status_router = Router()
 status_router.message.filter(AdminFilter())
@@ -24,7 +24,8 @@ async def bots_check(callback: CallbackQuery):
     # Show loading message
     await callback.message.edit_text("🔄 Проверяю статус сервисов...")
 
-    results = checker.check_all_services()
+    service_checker = ServiceChecker(SERVICES_CONFIG)
+    results = service_checker.check_all_services()
 
     # Create status message
     message = "🩹 <b>Статусы ботов:</b>\n\n"
@@ -69,7 +70,7 @@ async def service_detail(callback: CallbackQuery, callback_data: ServiceMenu):
 
     if results:
         result = results[0]
-        message = checker.format_service_message(service_name, result)
+        message = service_checker.format_service_message(service_name, result)
         keyboard = service_detail_kb(service_name, result)
 
         await callback.message.edit_text(
