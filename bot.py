@@ -8,7 +8,7 @@ from aiogram.client.default import DefaultBotProperties
 from tgbot.config import load_config, Config
 from tgbot.handlers import routers_list
 from tgbot.middlewares.config import ConfigMiddleware
-from tgbot.services.scheduler import scheduler, kpi_check
+from tgbot.services.scheduler import scheduler, kpi_check, check_services_status
 
 
 def register_global_middlewares(dp: Dispatcher, config: Config, session_pool=None):
@@ -70,7 +70,14 @@ async def main():
 
     register_global_middlewares(dp, config)
 
-    scheduler.add_job(kpi_check, "cron", hour="11", minute=0, args=[bot])
+    # KPI Check job
+    if config.checkers.kpi_check_enable:
+        scheduler.add_job(kpi_check, "cron", hour=str(config.checkers.kpi_check_hour), args=[bot])
+
+    # Services Check job
+    if config.checkers.services_check_enable:
+        scheduler.add_job(check_services_status, "interval", minutes=config.checkers.services_check_interval, args=[bot])
+
     scheduler.start()
 
     await dp.start_polling(bot)
