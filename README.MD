@@ -1,18 +1,22 @@
-# System requirements
+# Ссылки
+https://t.me/botboots_bot
+
+# Системные требования
 ```bash
 apt install unixodbc msodbcsql17
 ```
 
-# Installation
-## Without docker
+# Установка
+## Без докера
 1. `git clone https://github.com/ERTG-BOTS/bot-checker.git`
 2. `cd bot-checker`
 3. `python -m venv venv`
 4. `source venv/bin/activate`
 5. `pip install -r requirements.txt`
-6. Run `bot.py` with venv or run `bot-checker.service` as systemd service
+6. Запусти `bot.py` через venv или запусти `bot-checker.service` как сервис
 
-## With docker (not ready yet)
+## С докером (пока не готово)
 1. `git clone https://github.com/ERTG-BOTS/bot-checker.git`
 2. `cd bot-checker`
 3. `docker compose up -d`
+
