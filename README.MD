@@ -42,7 +42,8 @@ apt install unixodbc msodbcsql17
 Уведомление об изменении состояния сервиса отправляется администраторам, указанным в .env в переменной ADMINS
 
 # Переменные
-```BOT_TOKEN(str): Токен бота из @botfather
+```
+BOT_TOKEN(str): Токен бота из @botfather
 ADMINS (list[int]): Список ID чатов админов
 
 DB_HOST (str): Адрес сервера базы данных
