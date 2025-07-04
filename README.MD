@@ -13,7 +13,7 @@ apt install unixodbc msodbcsql17
 3. `python -m venv venv`
 4. `source venv/bin/activate`
 5. `pip install -r requirements.txt`
-6. Запусти `bot.py` через venv или запусти `bot-checker.service` как сервис
+6. Запусти `bot.py` через venv или `bot-checker.service` как сервис
 
 ## С докером (пока не готово)
 1. `git clone https://github.com/ERTG-BOTS/bot-checker.git`
@@ -23,16 +23,16 @@ apt install unixodbc msodbcsql17
 # Проверки
 ## Статусы ботов
 На текущий момент проверяется статус следующих сервисов на машине, где запущен бот:
-- adaptive.service
-- achievmentbot.service
-- nckachievenmentbot.service
-- stpquestion.service
-- nckquestion.service
-- ntposchedule.service
-- nckschedule.service
-- gifter.service
-- nckobsh.service
-- nckteach.service
+- `adaptive.service`
+- `achievmentbot.service`
+- `nckachievenmentbot.service`
+- `stpquestion.service`
+- `nckquestion.service`
+- `ntposchedule.service`
+- `nckschedule.service`
+- `gifter.service`
+- `nckobsh.service`
+- `nckteach.service`
 
 Уведомление об изменении состояния сервиса отправляется администраторам, указанным в .env в переменной ADMINS
 
@@ -42,17 +42,17 @@ apt install unixodbc msodbcsql17
 Уведомление об изменении состояния сервиса отправляется администраторам, указанным в .env в переменной ADMINS
 
 # Переменные
-BOT_TOKEN(str): Токен бота из @botfather
-ADMINS=(list[int]): Список ID чатов админов
+```BOT_TOKEN(str): Токен бота из @botfather
+ADMINS (list[int]): Список ID чатов админов
 
-DB_HOST=(str): Адрес сервера базы данных
-DB_USER=(str): Имя пользователя базы данных
-DB_PASSWORD=(str): Пароль пользователя базы данных
-DB_NAME=(str): Название базы данных
+DB_HOST (str): Адрес сервера базы данных
+DB_USER (str): Имя пользователя базы данных
+DB_PASSWORD (str): Пароль пользователя базы данных
+DB_NAME (str): Название базы данных
 
-KPI_CHECK_ENABLE=(bool): Статус активности проверки KPI
-KPI_CHECK_HOUR=(int): Время запуска проверки KPI
+KPI_CHECK_ENABLE (bool): Статус активности проверки KPI
+KPI_CHECK_HOUR (int): Время запуска проверки KPI
 
-SERVICES_CHECK_ENABLE=(bool): Статус активности проверки статуса сервисов
-SERVICES_CHECK_INTERVAL=(int): Время запуска проверки статуса сервисов
-SERVICES_CHECK_COOLDOWN=(int): Время игнорирования лежащего сервиса после предыдущего уведомления
+SERVICES_CHECK_ENABLE (bool): Статус активности проверки статуса сервисов
+SERVICES_CHECK_INTERVAL (int): Время запуска проверки статуса сервисов
+SERVICES_CHECK_COOLDOWN (int): Время игнорирования лежащего сервиса после предыдущего уведомления```
