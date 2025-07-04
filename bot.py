@@ -8,7 +8,7 @@ from aiogram.client.default import DefaultBotProperties
 from tgbot.config import load_config, Config
 from tgbot.handlers import routers_list
 from tgbot.middlewares.config import ConfigMiddleware
-from tgbot.services.scheduler import scheduler, kpi_check, check_services_status
+from tgbot.services.scheduler import scheduler, kpi_check, services_status_check
 
 
 def register_global_middlewares(dp: Dispatcher, config: Config, session_pool=None):
@@ -76,7 +76,7 @@ async def main():
 
     # Services Check job
     if config.checkers.services_check_enable:
-        scheduler.add_job(check_services_status, "interval", minutes=config.checkers.services_check_interval, args=[bot])
+        scheduler.add_job(services_status_check, "interval", minutes=config.checkers.services_check_interval, args=[bot])
 
     scheduler.start()
 

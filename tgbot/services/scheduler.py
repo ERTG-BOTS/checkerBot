@@ -30,13 +30,9 @@ async def kpi_check(bot: Bot):
         await bot.send_message(admin, message)
 
 
-async def check_services_status(bot: Bot):
+async def services_status_check(bot: Bot):
     """Check all services status and notify admins about offline services"""
     global last_offline_services, last_notification_time
-
-    # Check if service monitoring is enabled
-    if not config.checkers.services_check_enable:
-        return
 
     try:
         # Get all services from config
@@ -139,8 +135,6 @@ async def check_services_status(bot: Bot):
 
             # Send notification to all admins
             for admin_id in admins:
-                if admin_id != 6486127400:
-                    continue
                 try:
                     await bot.send_message(admin_id, message, parse_mode="HTML")
                 except Exception as e:
