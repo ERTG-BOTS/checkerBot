@@ -46,6 +46,7 @@ def services_status_kb(results):
     """Create keyboard with service statuses"""
     builder = InlineKeyboardBuilder()
 
+    # Add service status buttons
     for result in results:
         service_name = result['service']
         if service_name in SERVICES_CONFIG:
@@ -65,9 +66,15 @@ def services_status_kb(results):
                 callback_data=ServiceMenu(service_name=service_name, action="view").pack()
             )
 
-    # Add back button
+    # Count service buttons to determine layout
+    service_count = len([r for r in results if r['service'] in SERVICES_CONFIG])
+
+    # Add refresh and back buttons
+    builder.button(text="♻️ Обновить", callback_data=MainMenu(choice="status").pack())
     builder.button(text="🔙 Назад", callback_data=BackMenu(to="main").pack())
-    builder.adjust(2)  # One button per row
+
+    # Adjust layout: 2 buttons per row for services, then 2 buttons in last row for refresh/back
+    builder.adjust(2, 2)  # Puts services in rows of 2, and last row with refresh/back buttons
 
     return builder.as_markup()
 
