@@ -52,6 +52,33 @@ class TgBot:
 
 
 @dataclass
+class Checkers:
+    """
+    Creates the Checkers object from environment variables.
+    """
+
+    kpi_check_enable: bool
+    kpi_check_hour: int
+
+    services_check_enable: bool
+    services_check_interval: int
+    services_check_cooldown: int
+
+    @staticmethod
+    def from_env(env: Env):
+        """
+        Creates the Checkers object from environment variables.
+        """
+        kpi_check_enable = env.bool("KPI_CHECK_ENABLE")
+        kpi_check_hour = env.int("KPI_CHECK_HOUR")
+
+        services_check_enable = env.bool("SERVICES_CHECK_ENABLE")
+        services_check_interval = env.int("SERVICES_CHECK_INTERVAL")
+        services_check_cooldown = env.int("SERVICES_CHECK_COOLDOWN")
+
+        return Checkers(kpi_check_enable, kpi_check_hour, services_check_enable, services_check_interval, services_check_cooldown)
+
+@dataclass
 class RedisConfig:
     """
     Redis configuration class.
@@ -130,6 +157,7 @@ class Config:
     """
 
     tg_bot: TgBot
+    checkers: Checkers
     misc: Miscellaneous
     db: Optional[DbConfig] = None
     redis: Optional[RedisConfig] = None
@@ -151,6 +179,6 @@ def load_config(path: str = None) -> Config:
     return Config(
         tg_bot=TgBot.from_env(env),
         db=DbConfig.from_env(env),
-        # redis=RedisConfig.from_env(env),
+        checkers=Checkers.from_env(env),
         misc=Miscellaneous(),
     )
