@@ -14,7 +14,6 @@ SERVICES_CONFIG = {
     "ntposchedule.service": {"name": "🕞 НТП График", "display_name": "НТП График"},
     "nckschedule.service": {"name": "🕞 НЦК График", "display_name": "НЦК График"},
     "gifter.service": {"name": "🎁 Гифтер", "display_name": "Гифтер"},
-    "nckobsh.service": {"name": "👨‍👨 НЦК Общий ряд", "display_name": "НЦК Общий ряд"},
     "nckteach.service": {"name": "🎓 NCKTeach", "display_name": "NCKTeach"},
 }
 

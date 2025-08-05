@@ -23,7 +23,6 @@ apt install unixodbc msodbcsql17
 - `ntposchedule.service`
 - `nckschedule.service`
 - `gifter.service`
-- `nckobsh.service`
 - `nckteach.service`
 
 Уведомление об изменении состояния сервиса отправляется администраторам, указанным в .env в переменной ADMINS
