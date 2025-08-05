@@ -20,8 +20,6 @@ apt install unixodbc msodbcsql17
 - `adaptive.service`
 - `achievmentbot.service`
 - `nckachievenmentbot.service`
-- `stpquestion.service`
-- `nckquestion.service`
 - `ntposchedule.service`
 - `nckschedule.service`
 - `gifter.service`
